@@ -1,0 +1,6 @@
+name = Image Random Styles
+description = Random image styles for formatter image
+core = 7.x
+version = "7.x-1.0"
+core = "7.x"
+package = "TK Features"

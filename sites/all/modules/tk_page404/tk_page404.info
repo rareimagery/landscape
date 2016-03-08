@@ -1,0 +1,10 @@
+name = "Themeski page 404"
+description = "Page 404"
+dependencies[] = 'search404'
+core = 7.x
+
+configure = admin/config/development/page404
+
+
+; Information added by drupal.org packaging script on 2013-06-09
+version = "7.x-1.x-dev"

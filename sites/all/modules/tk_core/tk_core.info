@@ -1,0 +1,28 @@
+name = TK Core
+description = Provide functions for tk modules
+core = 7.x
+package = TK Features
+version = 7.x-1.0-dev
+project = tk_core
+dependencies[] = ctools
+dependencies[] = ds
+dependencies[] = ds_extras
+dependencies[] = ds_format
+dependencies[] = ds_ui
+dependencies[] = strongarm
+features[ctools][] = ds:ds:1
+features[ctools][] = strongarm:strongarm:1
+features[ds_view_modes][] = related
+features[ds_view_modes][] = short
+features[features_api][] = api:2
+features[variable][] = ds_extras_field_template
+features[variable][] = ds_extras_hide_page_title
+features[variable][] = image_jpeg_quality
+
+
+; Information added by drush on 2014-04-28
+version = "7.x-1.0-dev"
+core = "7.x"
+project = "tk_core"
+datestamp = "1398670337"
+

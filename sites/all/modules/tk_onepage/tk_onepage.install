@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Implement hook_field_schema()
+ *
+ */
+
+function tk_onepage_field_schema(){
+	$schema = array();
+
+	$schema['columns']['section_onepage_title'] = array(
+		'type' => 'varchar',
+		'length' => '255',
+		'not null' => FALSE,
+		'default' => '',
+	);
+	$schema['columns']['section_onepage_anchor'] = array(
+		'type' => 'varchar',
+		'length' => '255',
+		'not null' => FALSE,
+		'default' => '',
+	);
+	$schema['columns']['section_onepage_block'] = array(
+		'type' => 'varchar',
+		'length' => '255',
+		'not null' => FALSE,
+		'default' => '',
+	);
+
+	return $schema;
+
+}
+
+
+
+

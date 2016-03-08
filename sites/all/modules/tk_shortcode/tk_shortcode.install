@@ -1,0 +1,173 @@
+<?php
+/**
+ * @file
+ * Implement hook_install
+ */
+function tk_shortcode_install(){
+
+	$body_text = '<p>Vestibulum eget libero velit, at sollicitudin ipsum.</p>
+	<h1>H1 Title Heading</h1>
+	<p>Vestibulum eget libero velit, at sollicitudin ipsum. Vivamus tellus ante, lobortis eu posuere sed, bibendum eu erat.</p>
+	<h2>H2 Title Heading</h2>
+	<p>Aliquam sollicitudin felis sit amet mauris mattis consectetur. Praesent sed bibendum est.</p>
+	<h3>H3 Title Heading</h3>
+	<p>Morbi quis arcu et nisl varius adipiscing sed sit amet orci. Duis non erat turpis.</p>
+	<h4>H4 Title Heading</h4>
+	<p>Vestibulum sed scelerisque eros. Nullam ipsum sapien, elementum a.</p>
+	<h3>Links Styling</h3>
+	<h2><a href="#" title="H2 Link Hover">H2 Link</a></h2>
+	<h3><a href="#" title="H3 Link Hover">H3 Link</a></h3>
+	<h4><a href="#" title="h3 Link Hover">H4 Link</a></h4>
+	<p><a href="#">This is a normal link</a></p>
+	<h2 class="block-title">Table Responsive</h2>
+	<div class="show-code">
+		<table class="responsive">
+			<thead>
+				<tr>
+					<th>Table</th>
+					<th>Header 1</th>
+					<th><a class="active" href="#" title="sort by Type">Link in Header</a></th>
+					<th class="active"><a class="active" href="#" title="sort by Updated">Sortable<img alt="sort ascending" height="13" src="misc/arrow-asc.png" title="sort ascending" typeof="foaf:Image" width="13" /></a></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="even">
+					<td>Row 1</td>
+					<td>Division</td>
+					<td>Division</td>
+					<td>Division</td>
+				</tr>
+				<tr class="odd">
+					<td>Row 2</td>
+					<td>Division</td>
+					<td>Division</td>
+					<td>Division</td>
+				</tr>
+				<tr class="even">
+					<td>Row 3</td>
+					<td>Division</td>
+					<td>Division</td>
+					<td>Division</td>
+				</tr>
+				<tr class="odd">
+					<td>Row 4</td>
+					<td>Division</td>
+					<td>Division</td>
+					<td>Division</td>
+				</tr>
+				<tr class="even">
+					<td>Row 5</td>
+					<td>Division</td>
+					<td>Division</td>
+					<td>Division</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="block-shortcode--dropcap">
+		<h2 class="block-title">Dropcap</h2>
+		<ul class="large-block-grid-3">
+			<li>
+				<p class="show-code"><span class="dropcap">A</span> dipiscing donec nunc ipsum, loboris convallis laoret enim. Aliquam hendrerit rutrum iaculis. Aliquam vitae odio elit. Nullam ondimentum etiam maluada velit beum donec sit amet augue tristique.</p>
+			</li>
+			<li>
+				<p class="show-code"><span class="dropcap circle dark">B</span> bunc ipsum, loboris convallis laoret enim. Aliquam hendrerit rutrum iaculis. Aliquam vitae odio elit ullam ondimentum etiam erosam amet risus. Mollis malesuada quis nulla. Vestibulum ante ipsum.</p>
+			</li>
+			<li>
+				<p class="show-code"><span class="dropcap color">C</span> bunc ipsum, loboris convallis laoret enim. Aliquam hendrerit rutrum iaculis. Aliquam vitae odio elit ullam ondimentum etiam erosam amet risus. Mollis malesuada quis nulla. Vestibulum ante ipsum.</p>
+			</li>
+		</ul>
+	</div>
+	<h2 class="block-title">Pager</h2>
+	<div class="item-list">
+		<ul class="pager">
+			<li class="pager-first even first"><a class="active" href="#" title="Go to first page">&laquo; first</a></li>
+			<li class="pager-previous odd"><a class="active" href="#" title="Go to previous page">&lsaquo; previous</a></li>
+			<li class="pager-item odd"><a class="active" href="#" title="Go to page 1">1</a></li>
+			<li class="pager-item even"><a class="active" href="#" title="Go to page 2">2</a></li>
+			<li class="pager-current even first">3</li>
+			<li class="pager-item odd"><a class="active" href="#" title="Go to page 4">4</a></li>
+			<li class="pager-item even"><a class="active" href="#" title="Go to page 5">5</a></li>
+			<li class="pager-next odd"><a class="active" href="#" title="Go to next page">next &rsaquo;</a></li>
+			<li class="pager-last even last"><a class="active" href="#" title="Go to last page">last &raquo;</a></li>
+		</ul>
+	</div>';
+
+	$node = new stdClass();
+	$node->type = 'page';
+	node_object_prepare($node);
+	$node->title = 'Style Guide';
+	$node->language = LANGUAGE_NONE;
+  $node->body[$node->language][0]['value']   = $body_text;
+  $node->body[$node->language][0]['format']  = 'full_html';
+  $node->path['alias'] = 'styleguide';
+  $node->path['pathauto'] = FALSE;
+  $node->uid = 1;
+  node_save($node);
+
+  $item = array(
+	  'menu_name' => 'main-menu',
+	  'link_title' => $node->title,
+	  'link_path' => 'node/'. $node->nid,
+	);
+	menu_link_save($item);
+
+	variable_set('node_id_page_shortcode',$node->nid);
+}
+
+
+
+
+/**
+ * Implement hook_uninstall
+*/
+
+function tk_shortcode_uninstall(){
+	//Delete blocks custom shortcode are created by feature 
+	$shortcode_block = array('shortcode_box','shortcode_button','shortcode_column','shortcode_item_accordion_01','shortcode_item_accordion_02','shortcode_item_tab_01','shortcode_item_tab_02','shortcode_list','shortcode_price_table','shortcode_tooltip');
+	
+  foreach($shortcode_block as $machine_name){
+		$bid = get_bid_by_machine_name($machine_name);
+		if($bid){
+			tk_delete_block_custom($bid);
+		}
+	}
+	
+	drupal_set_message(t('Removed all block shortcode.'));
+	
+	$check = variable_get('node_id_page_shortcode',FALSE);
+	if($check){
+		node_delete($check);
+		drupal_set_message(t('Removed Page style guide'));
+	}
+}
+
+/*
+ * Get bid by machine name (required module FE block)
+*/
+function get_bid_by_machine_name($machine_name){
+	$result = db_select('fe_block_boxes', 'b')
+    ->fields('b')
+    ->condition('machine_name', $machine_name,'=')
+	->execute()
+    ->fetchAssoc();
+	if(!empty($result)){
+		return $result['bid'];
+	}
+}
+
+//Function delete block base query of module block core drupal line 635 block.admin.inc
+
+function tk_delete_block_custom($bid){
+  db_delete('block_custom')
+    ->condition('bid', $bid)
+    ->execute();
+  db_delete('block')
+    ->condition('module', 'block')
+    ->condition('delta', $bid)
+    ->execute();
+  db_delete('block_role')
+    ->condition('module', 'block')
+    ->condition('delta', $bid)
+    ->execute();
+}

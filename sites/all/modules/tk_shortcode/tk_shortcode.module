@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the TK Shortcode feature.
+ */
+
+include_once 'tk_shortcode.features.inc';

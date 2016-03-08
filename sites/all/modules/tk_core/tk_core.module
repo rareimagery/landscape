@@ -1,0 +1,115 @@
+<?php
+/**
+ * @file
+ * Code for the TK Core feature.
+ */
+
+include_once 'tk_core.features.inc';
+
+/*
+ * Migrate content
+*/
+if(module_exists('migrate')){
+	abstract class ThemeskiMigration extends Migration {
+  	public function processImport(array $options = array()) {
+	    parent::processImport($options);
+	    // Do not force menu rebuilding. Otherwise pathauto will try to rebuild
+	    // in each node_insert invocation.
+	    variable_set('menu_rebuild_needed', FALSE);
+	  }
+	}
+}
+
+
+/*
+ * Implement hook_ds_fields_info_alter
+ * Alter field title 
+*/
+function tk_core_ds_fields_info_alter(&$fields, $entity_type) {
+	if(isset($fields['title'])){
+		$fields['title']['properties']['settings']['max_length'] = array('type'=>'textfield','description');
+		$fields['title']['properties']['settings']['word_boundary'] = array('type'=>'checkbox','description'=>'If checked, this field be trimmed only on a word boundary.');
+		$fields['title']['properties']['settings']['ellipsis'] = array('type'=>'checkbox','description'=>'If checked, a "..." will be added if a field was trimmed.');
+		$fields['title']['properties']['default'] = array(
+			'wrapper' => 'h2',
+			'link'=> 0,
+			'class'=>'',
+			'max_length' => '',
+			'word_boundary' => 0,
+			'ellipsis'=>0,
+		);
+		$fields['title']['function'] = 'tski_render_field';	
+	}
+}
+
+		
+function tski_render_field($field){
+	$title_field = FALSE;
+
+  $output = '';
+  $settings = isset($field['formatter_settings']) ? $field['formatter_settings'] : array();
+  $settings += $field['properties']['default'];
+
+  // Basic string.
+	if (isset($settings['link text'])) {
+	  $output = t($settings['link text']);
+	}
+  elseif (isset($field['properties']['entity_render_key']) && isset($field['entity']->{$field['properties']['entity_render_key']})) {
+    if ($field['entity_type'] == 'user' && $field['properties']['entity_render_key'] == 'name') {
+      $output = format_username($field['entity']);
+    }
+    else {
+      $title_field = $field['properties']['entity_render_key'] == 'title' && $field['entity_type'] == 'node';
+      $output = $field['entity']->{$field['properties']['entity_render_key']};
+    }
+  	}
+
+  	if (empty($output)) {
+    return;
+  }
+
+
+  // Trim
+	if(!empty($settings['max_length'])){
+		$wordsafe = FALSE;
+		$add_ellipsis = FALSE;
+		if($settings['word_boundary']){
+			$wordsafe = TRUE;
+		}
+		if($settings['ellipsis']){
+			$add_ellipsis = TRUE;
+		}
+		$output = truncate_utf8($output, $settings['max_length'], $wordsafe, $add_ellipsis, $min_wordsafe_length = 1);
+	}
+
+
+  // Link.
+  if ($settings['link']) {
+    if (isset($field['entity']->uri['path'])) {
+      $path = $field['entity']->uri['path'];
+    }
+    else {
+      $uri_info = entity_uri($field['entity_type'], $field['entity']);
+      $path = $uri_info['path'];
+    }
+    $output = l($output, $path);
+    if ($title_field) {
+      $output = ds_edit_support('title', $output, $field);
+    }
+  }
+  else {
+    $output = check_plain($output);
+    if ($title_field) {
+      $output = ds_edit_support('title', $output, $field);
+    }
+  }
+
+  // Wrapper and class.
+  if (!empty($settings['wrapper'])) {
+    $wrapper = check_plain($settings['wrapper']);
+    $class = (!empty($settings['class'])) ? ' class="' . check_plain($settings['class']) . '"' : '';
+    $output = '<' . $wrapper . $class . '>' . $output . '</' . $wrapper . '>';
+  }
+
+  return $output;
+}

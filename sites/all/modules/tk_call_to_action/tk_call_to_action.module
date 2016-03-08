@@ -1,0 +1,30 @@
+<?php
+/**
+ * @file
+ * Code for the TK Call To Action feature.
+ */
+
+include_once 'tk_call_to_action.features.inc';
+/**
+ * Implements hook_migrate_api().
+ */
+if(module_exists('migrate')){
+	function tk_call_to_action_migrate_api() {
+	  return array(
+	    'api' => 2,
+	    'migrations' => array(
+	      'ThemeskiCta' => array('class_name' => 'ThemeskiCta'),
+	    ),
+	  );
+	}
+}
+
+function tk_call_to_action_node_insert($node){
+	if($node->type == 'call_to_action'){
+		db_update('block')
+			->fields(array('css_class'=>'block-cta'))
+			->condition('module','nodeblock', '=')
+			->condition('delta',$node->nid, '=')
+			->execute();
+	}
+}

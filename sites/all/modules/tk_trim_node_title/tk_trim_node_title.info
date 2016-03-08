@@ -1,0 +1,9 @@
+name = TK Trim node title
+description = Provide UI trim node title
+core = 7.x
+version = 7.x-1.0-dev
+package = TK Features
+dependencies[] = ds
+
+
+

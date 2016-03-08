@@ -1,0 +1,20 @@
+#block-select { 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0; 
+	width: 60%; 
+}
+
+#block-select li { 
+	margin: 0 3px 3px 3px; 
+	padding: 0.4em; 
+	padding-left: 1.5em; 
+	font-size: 1.4em; 
+	height: 18px; 
+	background-color: #c6c6c6;
+}
+
+.form-item.form-item-blocks-select {
+	margin: 0;
+	padding-bottom: 0;
+}

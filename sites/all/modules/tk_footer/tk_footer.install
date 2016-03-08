@@ -1,0 +1,58 @@
+<?php
+
+function tk_footer_install(){
+	$url = drupal_get_path('module','tk_footer').'/image/themeski-small-white.png';
+	$file_temp = file_get_contents($url);
+	$file_temp = file_save_data($file_temp, 'public://themeski-small-white.png');
+
+	variable_set('tk_footer_logo_copyright',$file_temp->fid);
+}
+
+function tk_footer_uninstall(){
+	//Delete blocks custom shortcode are created by feature 
+	$shortcode_block = array('block_copyright','block_useful_link','block_facebook_like');
+	
+  foreach($shortcode_block as $machine_name){
+		$bid = _tk_footer_get_bid_by_machine_name($machine_name);
+		if($bid){
+			_tk_footer_delete_block_custom($bid);
+		}
+	}
+	drupal_set_message(t('Removed all block shortcode.'));
+	if(variable_get('tk_footer_logo_copyright',FALSE)){
+		$file = file_load(variable_get('tk_footer_logo_copyright'));
+		file_delete($file);
+	}
+
+	variable_del('tk_footer_logo_copyright');
+}
+
+/*
+ * Get bid by machine name (required module FE block)
+*/
+function _tk_footer_get_bid_by_machine_name($machine_name){
+	$result = db_select('fe_block_boxes', 'b')
+    ->fields('b')
+    ->condition('machine_name', $machine_name,'=')
+	->execute()
+    ->fetchAssoc();
+	if(!empty($result)){
+		return $result['bid'];
+	}
+}
+
+//Function delete block base query of module block core drupal line 635 block.admin.inc
+
+function _tk_footer_delete_block_custom($bid){
+  db_delete('block_custom')
+    ->condition('bid', $bid)
+    ->execute();
+  db_delete('block')
+    ->condition('module', 'block')
+    ->condition('delta', $bid)
+    ->execute();
+  db_delete('block_role')
+    ->condition('module', 'block')
+    ->condition('delta', $bid)
+    ->execute();
+}

@@ -1,0 +1,54 @@
+.l-header .row{
+  position: relative;
+}
+#main-menu{
+  position: static;
+}
+#main-menu > .menu{
+ position: static;  
+}
+#main-menu ul.menu li.expanded.tk-multi-dropdown-menu{
+  position: static;
+}
+#main-menu ul.menu li.expanded .sub-container{
+  left: inherit!important;
+}
+#main-menu ul.menu li.expanded .sub{
+  position: absolute;
+  display: none;
+  min-width: 180px;
+  padding:10px 0;
+}
+#main-menu ul.menu li.tk-multi-dropdown-menu.tk-multi-dropdown-menu_center{
+  position: relative;
+}
+#main-menu ul  li > ul.menu{
+  padding:5px 0;
+}
+#main-menu ul  li.is-mega-menu > ul.menu{
+  position: absolute;
+}
+#main-menu ul.menu   li > ul.menu li > span.nolink{
+  background: none repeat scroll 0 0 transparent;
+  border: medium none;
+  font-size: 17px;
+  line-height: 1.1em;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+#main-menu > ul.menu  > li.tk-multi-dropdown-menu > ul.menu > li {
+  float: left;
+  margin-bottom: 0px;
+}
+#main-menu > ul.menu > li > ul.menu > li > a{
+  /*padding: 0!important;*/
+}
+#main-menu > ul > li > ul.menu > li > ul.menu{
+  /*display: block;
+  position: relative;
+  width: 100%;
+  box-shadow: none;
+  border-top: none;*/
+}

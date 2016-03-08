@@ -1,0 +1,21 @@
+<?php
+/**
+ * @file
+ * Code for the TK Blog feature.
+ */
+
+include_once 'tk_blog.features.inc';
+
+/**
+ * Implements hook_migrate_api().
+ */
+if(module_exists('migrate')){
+	function tk_blog_migrate_api() {
+	  return array(
+	    'api' => 2,
+	    'migrations' => array(
+	      'ThemeskiBlogPost' => array('class_name' => 'ThemeskiBlogPost'),
+	    ),
+	  );
+	}
+}

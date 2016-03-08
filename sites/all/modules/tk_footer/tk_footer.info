@@ -1,0 +1,16 @@
+name = TK Footer
+description = Build block copyright and useful link
+core = 7.x
+package = TK Features
+version = 7.x-1.0-dev
+project = tk_footer
+dependencies[] = block_class
+dependencies[] = fe_block
+datestamp = 1398670317
+features[fe_block_boxes][] = block_copyright
+features[fe_block_boxes][] = block_facebook_like
+features[fe_block_boxes][] = block_useful_link
+features[fe_block_settings][] = block-block_copyright
+features[fe_block_settings][] = block-block_facebook_like
+features[fe_block_settings][] = block-block_useful_link
+features[features_api][] = api:2

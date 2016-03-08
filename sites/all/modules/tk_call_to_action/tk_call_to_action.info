@@ -1,0 +1,53 @@
+name = TK Call To Action
+description = Build a basic call to action block 
+core = 7.x
+package = TK Features
+version = 7.x-2.0-dev
+project = tk_call_to_action
+dependencies[] = block_class
+dependencies[] = ctools
+dependencies[] = ds
+dependencies[] = ds_ui
+dependencies[] = features
+dependencies[] = link
+dependencies[] = strongarm
+dependencies[] = text
+dependencies[] = nodeblock
+dependencies[] = views
+dependencies[] = tk_core
+features[ctools][] = ds:ds:1
+features[ctools][] = strongarm:strongarm:1
+features[ds_layout_settings][] = node|call_to_action|default
+features[features_api][] = api:2
+features[field_base][] = field_cta_link
+features[field_base][] = field_cta_slogan
+features[field_instance][] = node-call_to_action-field_cta_link
+features[field_instance][] = node-call_to_action-field_cta_slogan
+features[node][] = call_to_action
+features[variable][] = comment_anonymous_call_to_action
+features[variable][] = comment_call_to_action
+features[variable][] = comment_default_mode_call_to_action
+features[variable][] = comment_default_per_page_call_to_action
+features[variable][] = comment_form_location_call_to_action
+features[variable][] = comment_preview_call_to_action
+features[variable][] = comment_subject_field_call_to_action
+features[variable][] = field_bundle_settings_node__call_to_action
+features[variable][] = menu_options_call_to_action
+features[variable][] = menu_parent_call_to_action
+features[variable][] = node_options_call_to_action
+features[variable][] = node_preview_call_to_action
+features[variable][] = node_submitted_call_to_action
+features[variable][] = nodeblock_call_to_action
+features[variable][] = nodeblock_comment_link_call_to_action
+features[variable][] = nodeblock_node_link_call_to_action
+features[variable][] = nodeblock_node_overrides_call_to_action
+features[variable][] = nodeblock_view_mode_call_to_action
+files[] = tk_call_to_action.migrate.inc
+
+
+; Information added by drush on 2014-04-28
+version = "7.x-1.0-dev"
+core = "7.x"
+project = "tk_call_to_action"
+datestamp = "1398670325"
+

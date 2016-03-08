@@ -1,0 +1,66 @@
+<?php
+/**
+ * @file
+ * Code for the TK Portfolio feature.
+ */
+
+include_once 'tk_portfolio.features.inc';
+/**
+ * Implements hook_migrate_api().
+ */
+if(module_exists('migrate')){
+  function tk_portfolio_migrate_api() {
+    return array(
+      'api' => 2,
+      'migrations' => array(
+        'ThemeskiPortfolio' => array('class_name' => 'ThemeskiPortfolio'),
+      ),
+    );
+  }
+}
+
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function tk_portfolio_entity_info_alter(&$entity_info) {
+  // Alter a URI callback to the taxonomy_term entity.
+  $entity_info['taxonomy_term']['uri callback'] = 'tk_portfolio_taxonomy_term_uri';
+}
+
+/**
+ * Uri callback for the taxonomy terms.
+ */
+function tk_portfolio_taxonomy_term_uri($taxonomy_term) {
+  $uri = 'taxonomy/term/' . $taxonomy_term->tid;
+  if($taxonomy_term->vocabulary_machine_name == 'portfolio_category'){
+    $options = array();
+    $machine_name = 'portfolio_category';
+    $views_portfolio = views_get_view('portfolio');
+    
+    //Chose display page_1 to display portfolio by term
+    if(isset($views_portfolio->display['page_1']->display_options['filters']['field_portfolio_category_tid']['expose']['identifier']) || isset($views_portfolio->display['default']->display_options['filters']['field_portfolio_category_tid']['expose']['identifier'])){
+      
+      $path = $views_portfolio->display['page_1']->display_options['path'];
+      if ($taxonomy_term->vocabulary_machine_name == $machine_name) {
+        $uri = $path;
+      }
+      $options = array(
+        'query' => array('category' => $taxonomy_term->tid),
+        'absolute' => TRUE,
+      );
+      $path = url($path,$options);
+      // Alter the default uri for those two vocabularies so that it point to our
+      return array(
+        'path' => $path,
+      );
+    }
+  }else {
+    return array('path' => $uri);
+  }
+  
+  
+
+
+  
+}

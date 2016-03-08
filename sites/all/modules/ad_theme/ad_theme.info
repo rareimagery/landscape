@@ -1,0 +1,10 @@
+name = Administration theme pages
+description = Administration theme custom display admin pages, default theme use that pages.
+package = Administration
+
+configure = admin/appearance
+
+version = VERSION
+core = 7.x
+
+; Support by Geekpolis  (http://geekpolis.com)

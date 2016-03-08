@@ -1,0 +1,23 @@
+<?php
+/**
+ * @file .install
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function ad_theme_install() {
+  // updating module weight to 10 to make it run after system (for user access checks etc)
+  db_query("UPDATE {system} SET weight = 1000 WHERE name = 'ad_theme'");
+  
+  $link = array('!link' => l(t('Administer > Appearance > Administration theme'), 'admin/appearance'));
+  drupal_set_message(t("Please go !link to configuage Admin theme custom", $link));
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function ad_theme_uninstall() {
+  // cleaning up general admin theme variables
+  variable_del('admin_theme_disable_pages');
+}

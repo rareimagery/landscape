@@ -1,0 +1,424 @@
+<?php
+/**
+ * @file
+ * Code for the TK One Page feature.
+ */
+
+include_once 'tk_onepage.features.inc';
+
+/**
+ * Implement hook_field_info()
+ *
+ */
+
+function tk_onepage_field_info(){
+	return array(
+		'section_onepage' => array(
+			'label' => t('Section One Page'),
+			'description' => t('Embed block to One Page'),
+			'default_widget' => 'section_onepage_section_onepagefield_form',
+			'default_formatter' => 'section_onepagefield_formatter_default',
+		),
+	);
+}
+
+/**
+ * Implement hook_field_is_empty()
+ * 
+ */
+
+function tk_onepage_field_is_empty($item,$field){
+	if ($field['type'] == 'section_onepage') {
+		if (empty($item['section_onepage_title']) && empty($item['section_onepage_anchor'])) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+/**
+ * Implement hook_field_widget_info()
+ * Setup field
+ */
+
+function tk_onepage_field_widget_info(){
+	return array(
+		'section_onepage_section_onepagefield_form' => array(
+			'label' => t('Section One Page'),
+			'field types' => array('section_onepage'),
+			'behaviors' => array(
+				'multiple values' => FIELD_BEHAVIOR_DEFAULT,
+				'default value' => FIELD_BEHAVIOR_DEFAULT,
+			),
+		),
+	);
+}
+
+/**
+ * Implement hook_field_widget_form()
+ * Build field widget form
+ */
+
+function tk_onepage_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element){
+
+	$base = $element;
+	if ($instance['widget']['type'] == 'section_onepage_section_onepagefield_form') {
+		$widget = $instance['widget'];
+		$settings = $instance['settings'];
+		$element['section_onepage_title'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Title Section'),
+			'#default_value' => isset($items[$delta]['section_onepage_title']) ? $items[$delta]['section_onepage_title'] : NULL,
+		);
+
+		$element['section_onepage_anchor'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Anchor Section'),
+			'#default_value' => isset($items[$delta]['section_onepage_anchor']) ? $items[$delta]['section_onepage_anchor'] : NULL,
+		);
+
+		//Get all block in site
+		$blocks = array();
+	  foreach (module_implements('block_info') as $module) {
+	    $module_blocks = module_invoke($module, 'block_info');
+	    if ($module_blocks) {
+	      foreach ($module_blocks as $module_key => $info) {
+	        $blocks[drupal_ucfirst($module)][$module . '|' . $module_key] = $info['info'];
+	      }
+	    }
+	  }
+
+	  ksort($blocks);
+	  foreach($blocks as &$subarray) {
+	    asort($subarray);
+	  }
+
+	  $blocks = array('_none' => '------None-----') + $blocks;
+		$element['section_onepage_block'] = array(
+			'#type' => 'hidden',
+			'#default_value' => isset($items[$delta]['section_onepage_block']) ? $items[$delta]['section_onepage_block'] : NULL,
+		);
+
+
+		$element['wrap_blocks'][$delta]['blocks'] = array(
+			'#type' => 'fieldset',
+			'#title' => t('Select block'),
+			'#collapsed' => TRUE,
+			'#collapsible' => TRUE,
+			'#prefix' => '<div id="wrap-block-' . $delta .'">',
+    	'#suffix' => '</div>',
+		);	
+	
+		if(!empty($items) && isset($items[$delta])){
+			$wrap_block_count = isset($form_state['wrap_block_count'][$delta]) ? $form_state['wrap_block_count'][$delta] : count(explode(', ', $items[$delta]['section_onepage_block']));
+		}else {
+			$wrap_block_count = isset($form_state['wrap_block_count'][$delta]) ? $form_state['wrap_block_count'][$delta] : 1;
+		}
+
+		$form_state['wrap_block_count'][$delta] = $wrap_block_count;
+
+		for ($i=0; $i < $wrap_block_count ; $i++) { 
+			$element['wrap_blocks'][$delta]['blocks'][$i] = array(
+				'#type' => 'fieldset',				
+			);
+			
+			$element['wrap_blocks'][$delta]['blocks'][$i]['block'] = array(
+				'#type' => 'select',
+				'#options' => $blocks,
+			);
+
+			if (isset($items[$delta])) {
+				$value_default = explode(', ', $items[$delta]['section_onepage_block']);
+				$element['wrap_blocks'][$delta]['blocks'][$i]['block']['#default_value'] = $value_default[$i];
+			}else {
+				$element['wrap_blocks'][$delta]['blocks'][$i]['block']['#default_value'] = '_none';
+			}
+
+		}
+		$element['wrap_blocks'][$delta]['blocks']['add_another_block'] = array(
+	    '#type' => 'submit',
+	    '#value' => t('Add block'),
+	    '#name' => $field['field_name'] .'_add_another_block_'. $delta,
+	    '#submit' => array('_section_onepage_add_another_block'),
+	    '#ajax' => array(
+	      'callback' => '_ajax_section_onepage_add_another_block',
+	      'wrapper' => 'wrap-block-' . $delta,
+	    ),
+	    '#limit_validation_errors' => array(),
+	    '#validation' => array(),
+	  );
+	  
+	}
+
+	return $element;	
+}
+
+/**
+ * Handler button add another block
+ *
+ */
+
+function _section_onepage_add_another_block($form, &$form_state) {
+  $parents = $form_state['triggering_element']['#parents'];
+  $form_state['wrap_block_count'][$parents[2]]++;
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Return fieldset blocks
+ */
+
+function _ajax_section_onepage_add_another_block($form, $form_state) {
+  $parents = $form_state['triggering_element']['#parents'];
+  return $form[$parents[0]][$parents[1]][$parents[2]][$parents[3]][$parents[4]]['blocks'];
+}
+
+
+/**
+ * Implement hook_node_presave
+ * Save data section_onepage_block
+ */
+
+function tk_onepage_node_presave($node){
+	if ($node->type == 'one_page') {
+		if (!empty($node->field_section['und'])) {
+			foreach ($node->field_section['und'] as $delta => $field_section) {
+				$blocks[$delta] = array();
+				foreach ($field_section['wrap_blocks'] as $key => $value) {
+					foreach ($value['blocks'] as $key1 => $value1) {
+						if (is_numeric($key1) && $value1['block'] != '_none') {
+							$blocks[$delta][] = $value1['block'];
+						}
+					}
+				}
+				$node->field_section['und'][$delta]['section_onepage_block'] = implode(', ', $blocks[$delta]);
+			}
+		}
+	}
+}
+
+
+/**
+ * Implement hook_field_formatter_info() {
+ */
+
+function tk_onepage_field_formatter_info() {
+	return array(
+    'section_onepage_default' => array(
+      'label' => t('Default'),
+      'field types' => array('section_onepage'),
+    ),
+  );
+}
+
+/**
+ * Implement hook_field_formatter_view()
+ */
+
+function tk_onepage_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display){
+	$element = array();
+  $settings = $display['settings'];
+  switch ($display['type']) {
+  	case 'section_onepage_default':
+  		foreach ($items as $delta => $item) {
+  			$element[$delta]['#markup'] = theme('section_onepagefield_formatter_default',$item);
+  		}
+  		break;
+  }
+  return $element;
+}
+
+/**
+ * Implement hook_theme()
+ */
+
+function tk_onepage_theme($existing, $type, $theme, $path){
+	return array(
+		'section_onepagefield_formatter_default' => array(
+			'variables' => array(),
+		),
+	);
+}
+
+/**
+ * Function render section onepage
+ */
+
+function theme_section_onepagefield_formatter_default($variables){
+	$output = '';
+	$title = $variables['section_onepage_title'];
+	$anchor = $variables['section_onepage_anchor'];
+	// Invoke the block_view hook of the module.
+	$blocks_in_section = explode(', ', $variables['section_onepage_block']);
+	$output .= '<section id="'.$anchor.'" class="section-one-page">';
+
+	foreach ($blocks_in_section as $block) {
+		list($module, $delta) = explode('|', $block);
+		$block = module_invoke($module, 'block_view', $delta);
+		// Get contextual links.
+	  $contextual_links = array();
+	  $contextual = module_exists('contextual') && user_access('access contextual links');
+	  if ($contextual) {
+	    if (is_array($block['content']) && isset($block['content']['#contextual_links'])) {
+	      $contextual_links = $block['content']['#contextual_links'];
+	    }
+	  }
+	 
+	  // Render the block content.
+	  if (isset($block['content']) && is_array($block['content'])) {
+	    $block['content'] = drupal_render($block['content']);
+	  }
+
+	  if (!empty($block['content'])) {
+	  	// Make sure subject is set.
+	    if (!isset($block['subject'])) {
+	      $block['subject'] = '';
+	    }
+
+	    global $theme_key;
+	    $full_block = db_query("SELECT * FROM {block} WHERE module = :module AND delta = :delta AND theme = :theme", array(':module' => $module, ':delta' => $delta, ':theme' => $theme_key))->fetchObject();
+	    if (!empty($full_block)) {
+	      if ($full_block->title == '<none>') {
+	        $block['subject'] = '';
+	      }
+	      elseif (!empty($full_block->title)) {
+	        $block['subject'] = $full_block->title;
+	      }
+	    }
+	    //Get css_classes block
+	    $block_real = block_load($module, $delta);
+
+	    $block = (object) $block;
+	    $block->region = NULL;
+	    $block->module = $module;
+	    $block->delta = $delta;
+	    if (isset($block_real->css_class)) {
+	    	$block->css_class = $block_real->css_class;
+	    }
+
+	    $elements = array('elements' => array('#block' => $block, '#children' => $block->content));
+	    // Add contextual links.
+	    if ($contextual) {
+	      $elements['elements'] += array('#contextual_links' => array_merge($contextual_links, array('block' => array('admin/structure/block/manage', array($block->module, $block->delta)))));
+	    }
+	    $markup_block = theme('block', $elements);
+			$output .= $markup_block;
+	  }
+	}
+	$output .= '</section>';
+	return $output;
+}
+
+/**
+ * Implement hook_node_insert()
+ * Create Menu one page when create a one page
+ */
+
+function tk_onepage_node_insert($node){
+	if ($node->type == 'one_page') {
+		//Create Menu
+		$menu = array();
+    $menu['menu_name'] = "menu-onepage-".$node->nid;
+    $menu['title'] = "Menu Onepage ".$node->title;
+    $menu['description'] = "The <em>Onepage</em> menu contains links to ".$node->title;
+    if (!menu_load($menu['menu_name'])) {
+    	menu_save($menu);
+    	//Create Menu link
+	    if (!empty($node->field_section['und'])) {
+	    	foreach ($node->field_section['und'] as $key => $value) {
+	    		$link = array();
+	    		$title = $value['section_onepage_title'];
+	    		$anchor = $value['section_onepage_anchor'];
+
+	    		$link['link_path'] = 'node/'.$node->nid;
+					$link['options']['fragment'] = $anchor;
+	    		$link['link_title'] = $title;
+	    		$link['menu_name'] = $menu['menu_name'];
+	    		$link['expanded'] = 1;
+	    		$link['weight'] = 0;
+
+	    		$item = array(
+			      'link_path' => $link['link_path'],
+			      'link_title' => $link['link_title'],
+			      'options' => $link['options'],
+			      'menu_name' => $link['menu_name'],
+			      'weight' => $link['weight'],
+			      'expanded' => $link['expanded'],
+			    );
+	    		$exists = db_query("SELECT mlid from {menu_links} WHERE link_title=:link_title AND link_path=:link_path", array(':link_title' =>  $link['link_title'], ':link_path' => $link['link_path']))->fetchField();
+
+	    		if (!$exists) {
+	    			menu_link_save($item);
+	    		}
+	    	}
+	    }
+    }
+	}
+}
+
+/**
+ * Implement hook_node_update
+ * Update menu item onepage
+ */
+
+function tk_onepage_node_update($node){
+	if ($node->type == 'one_page') {
+		$menu['menu_name'] = "menu-onepage-".$node->nid;
+    //Create menu item
+    if (!empty($node->field_section['und'])) {
+    	foreach ($node->field_section['und'] as $key => $value) {
+    		$link = array();
+    		$title = $value['section_onepage_title'];
+    		$anchor = $value['section_onepage_anchor'];
+
+    		$link['link_path'] = 'node/'.$node->nid;
+				$link['options']['fragment'] = $anchor;
+    		$link['link_title'] = $title;
+    		$link['menu_name'] = $menu['menu_name'];
+    		$link['expanded'] = 1;
+    		$link['weight'] = 0;
+
+    		$item = array(
+		      'link_path' => $link['link_path'],
+		      'link_title' => $link['link_title'],
+		      'options' => $link['options'],
+		      'menu_name' => $link['menu_name'],
+		      'weight' => $link['weight'],
+		      'expanded' => $link['expanded'],
+		    );
+    		$exists = db_query("SELECT mlid from {menu_links} WHERE link_title=:link_title AND link_path=:link_path", array(':link_title' =>  $link['link_title'], ':link_path' => $link['link_path']))->fetchField();
+
+    		if (!$exists) {
+    			menu_link_save($item);
+    		}
+    	}
+    }
+	}
+}
+
+/**
+ * Implement hook_node_delete
+ * Delete Menu one page  when delete node onepage
+ */
+
+function tk_onepage_node_delete($node){
+	if ($node->type == 'one_page') {
+		$menu_name = "menu-onepage-".$node->nid;
+		$menu = menu_load($menu_name);
+		if ($menu) {
+			menu_delete($menu);
+		}
+	}
+}
+
+/**
+ * Implements hook_preprocess_block()
+ * Add class menu-one-page to block menu onepage
+ */
+ 
+function tk_onepage_preprocess_block(&$vars) {
+	$block = $vars['block'];
+	if(strchr($block->delta,'menu-onepage')){
+		$vars['classes_array'][] = drupal_html_class('menu-onepage');
+	}
+}

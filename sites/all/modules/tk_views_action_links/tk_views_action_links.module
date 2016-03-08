@@ -1,0 +1,14 @@
+<?php
+/*
+ * @file .module
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function tk_views_action_links_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'tk_views_action_links'),
+  );
+}

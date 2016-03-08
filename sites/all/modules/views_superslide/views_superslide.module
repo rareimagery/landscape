@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * Implements hook_views_api().
+ */
+function views_superslide_views_api() {
+  return array(
+    'api' => '3',
+  );
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for theme_views_view_vertical_tabs().
+ */
+function template_preprocess_views_superslide(&$vars) {
+	$view = $vars['view'];
+	$rows = $vars['rows'];
+	$group = $view->name . '-' . $view->current_display;
+
+	$markup  = '';
+	$markup .= '<div id="superslide-'.$group.'" class="superslide">';
+	$markup .= '<div class="bd">';
+		$markup .= '<ul>';
+			foreach ($rows as $key => $row) {
+				$markup .= '<li>'.$row.'</li>';
+			}
+		$markup .= '</ul>';
+	$markup .= '</div>';
+	$markup .= '<div class="hd">';
+  $markup .= '<ul>';
+  $markup .= '</ul>';
+  $markup .= '</div>';
+  //Navigation
+	$markup .= '<div class="pnBtn prev"> <span class="blackBg"></span> <a class="arrow" href="javascript:void(0)"></a> </div>';
+  $markup .= '<div class="pnBtn next"> <span class="blackBg"></span> <a class="arrow" href="javascript:void(0)"></a> </div>';
+
+	$markup .= '</div>';
+
+	$vars['superslide'] = $markup;
+}

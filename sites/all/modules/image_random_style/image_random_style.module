@@ -1,0 +1,121 @@
+<?php
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function image_random_style_field_formatter_info() {
+  return array(
+    'images_style_random' => array(
+      'label' => t('Random Image Style'),
+      'description' => t('Random Image Styles'),
+      'field types' => array('image'),
+      'settings' => array('image_style' => 'default',),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function image_random_style_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $element = array();
+
+  if ($display['type'] == 'images_style_random') {
+    $element['image_style'] = array(
+      '#title'   => t('View mode'),
+      '#type'    => 'checkboxes',
+      '#options' => _image_random_style_entity_view_mode_labels(),
+      '#default_value' => $settings['image_style'],
+    );
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function image_random_style_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $summary = t('Image style: @size', array(
+    '@size' => implode(',', array_filter($settings['image_style'])),
+  ));
+  return $summary;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function image_random_style_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $path = drupal_get_path('module', 'image_random_style');
+  $d_path = base_path() . $path;
+  $width = NULL;
+
+  // Initialize the var.
+  $element = array();
+  // Get the settings.
+  $settings = $display['settings'];
+  // The Size setting selected in the settings form.
+  $size = $settings['image_style'];
+  $style = array_rand(array_filter($size));
+  // Create the image.
+  $style_load = image_style_load($style);
+
+  if (isset($items['0'])) {
+
+    if (is_null($width)) {
+      $width = $items['0']['width'];
+      $height = $items['0']['height'];
+    }
+    else {
+      foreach ($style_load as $key => $values) {
+        if (is_array($values) && count($values) > 0) {
+          foreach ($values as $key_n => $values_n) {
+            $width = $values_n['data']['width'];
+            $height = $values_n['data']['height'];
+          }
+        }
+      }
+    }
+
+    $settings = $display['settings'];
+    $element = array();
+    if ($display['type'] == 'images_style_random') {
+      $element[0]['#type'] = 'markup';
+      $link_element = '';
+      $item_first = reset($items);
+      if ($size == 'default') {
+        $link_element = '<img src="' . file_create_url($item_first['uri']) . '" width="' . $width . '" height="' . $height . '" />';
+      } else {
+        $link_element .= theme(
+          'image_style',
+          array(
+            'style_name' => $style,
+            'path' => $item_first['uri'],
+            'getsize' => TRUE,
+            'attributes' => array('class' => array('thumb')),
+            'width' => $width,
+            'height' => $height,
+          )
+        );
+      }
+      $element[0]['#markup'] = $link_element;
+    }
+
+    return $element;
+  }
+}
+
+/**
+ * Return an array of available view modes for file entities.
+ */
+function _image_random_style_entity_view_mode_labels() {
+  $labels = array();
+  $style_optiions = image_styles();
+  foreach ($style_optiions as $key => $values) {
+    $labels[$key] = $values['name'];
+  }
+  return $labels;
+}

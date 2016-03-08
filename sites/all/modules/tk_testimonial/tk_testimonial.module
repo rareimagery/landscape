@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Code for the TK Testimonial feature.
+ */
+
+include_once 'tk_testimonial.features.inc';
+/**
+ * Implements hook_migrate_api().
+ */
+if(module_exists('migrate')){
+	function tk_testimonial_migrate_api() {
+	  return array(
+	    'api' => 2,
+	    'migrations' => array(
+	      'ThemeskiTestimonial' => array('class_name' => 'ThemeskiTestimonial'),
+	    ),
+	  );
+	}
+}

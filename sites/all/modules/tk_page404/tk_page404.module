@@ -1,0 +1,242 @@
+<?php
+
+/* *
+ * @file
+ * The page404 module file, does all the searching
+ * when a 404 occurs
+ */
+
+/**
+ * Implement hook menu
+ **/
+function tk_page404_menu() {
+  $items['admin/config/development/page404'] = array(
+    'title' => 'Page 404 settings',
+    'description' => 'Configure display page404.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('page404_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Page404 administration settings.
+ */
+function page404_settings() {
+  $form['media'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Display image.')
+  );
+  $form['media']['page404_media_1'] = array(
+    '#title' => t('Image 1'),
+    '#type' => 'managed_file',
+    '#description' => t('The uploaded image will be displayed on this page404.'),
+    '#default_value' => variable_get('page404_media_1', ''),
+    '#upload_location' => 'public://',
+  );
+
+  $form['media']['page404_media_2'] = array(
+    '#title' => t('Image 2'),
+    '#type' => 'managed_file',
+    '#description' => t('The uploaded image will be displayed on this page404.'),
+    '#default_value' => variable_get('page404_media_2', ''),
+    '#upload_location' => 'public://',
+  );
+
+  $form['default_page']['page404_message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+    '#default_value' => variable_get('page404_message', 'Themeski could not find it.'),
+  );
+
+  $form['choosen_style'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Add block to display page404'),
+    '#default_value' => variable_get('choosen_style', FALSE),
+  );
+
+  module_load_include('inc', 'block', 'block.admin');
+  $blocks = block_admin_display_prepare_blocks('seven');
+
+  foreach ($blocks as $key => $value) {
+    $options[$value['bid']] = $value['info'];
+  }
+
+  $options[''] = t('None');
+
+  drupal_add_js(array('tk_page404' => array('blocks' => $options)), 'setting');
+  $form['block_settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Block Configure'),
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="choosen_style"]' => array('checked' => FALSE),
+      ),
+    ),
+  );
+  $form['block_settings']['block_invoke'] = array(
+    '#type' => 'select',
+    '#title' => t('Select block'),
+    '#options' => $options,
+    '#default_value' => variable_get('block_invoke', ''),
+    '#multiple' => TRUE,
+  );
+
+  $rows = explode(';', variable_get('blocks_select', ''));
+  $list_select = '<ul id="block-select">';
+
+  foreach ($rows as $k => $row) {
+    if (!is_numeric($row)) continue;
+    $list_select .= '<li id="block-'.$row.'">'.$options[$row].'</li>';
+  }
+  $list_select .= '</ul>';
+
+  $form['block_settings']['blocks_select'] = array(
+    '#title' => t('Order block select'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('blocks_select', ''),
+    '#suffix' => $list_select,
+    '#id' => 'blocks-selected',
+  );
+
+  drupal_add_js(drupal_get_path('module', 'tk_page404') . '/tk_page404.js');
+  drupal_add_js('http://code.jquery.com/ui/1.10.3/jquery-ui.js');
+  drupal_add_css(drupal_get_path('module', 'tk_page404') . '/tk_page404.css');
+  $form['#submit'][] = 'page404_settings_submit';
+  return system_settings_form($form);
+}
+
+function page404_settings_submit($form, $form_state) {
+  $values = $form_state['values'];
+
+  global $user;
+
+  if ($values['page404_media_1']) {
+    $file_obj = file_load($values['page404_media_1']);
+    $file_obj->status = FILE_STATUS_PERMANENT;
+    file_save($file_obj);
+    file_usage_add($file_obj, 'user', 'user', $user->uid);  
+  }
+
+  if ($values['page404_media_2']) {
+    $file_obj = file_load($values['page404_media_2']);
+    $file_obj->status = FILE_STATUS_PERMANENT;
+    file_save($file_obj);
+    file_usage_add($file_obj, 'user', 'user', $user->uid);  
+  }
+}
+
+function tk_page404_menu_alter(&$items) {
+  if (!empty($items['search404'])) {
+    $items['search404']['page callback'] = 'tk_page404_page_display';
+  }
+}
+
+function tk_page404_page_display() {
+  $out = '<div class="default-404">';
+  $media[] = variable_get('page404_media_1', '');
+  $media[] = variable_get('page404_media_2', '');
+
+  $message = variable_get('page404_message', '');
+  
+	$flag = 0;
+  foreach ($media as $key => $value) {
+    if (empty($value)) continue;
+		if (variable_get('page404_media_2', '') == $value) {
+			$out .= '<div class="main-page-404">';
+			$flag = 1;
+		}
+		
+    $file = file_load($value);
+    $url = file_create_url($file->uri);
+    
+    $out .= '<div class="page404 media element-display-'.$key.'"><img src="'.$url.'" /></div>';
+  }
+
+  if (!empty($message)) {
+    $out .= '<div class="page404 message element-display">'.$message.'</div>';
+  }
+
+  $out .= search404_page();
+
+	if ($flag) {
+		$out .= '</div>';
+	}
+	
+	$out .= '</div>';
+	
+	$output['main'] = $out;
+	
+  $choosen = variable_get('choosen_style', FALSE);
+
+  $results = array();
+  if ($choosen) {
+    $bids = variable_get('blocks_select', '');
+    $bids = explode(';', $bids);
+    
+    module_load_include('inc', 'block', 'block.admin');
+
+    $blocks = block_admin_display_prepare_blocks('seven');
+    $index = 0;
+    $rs = array();
+    foreach ($blocks as $key => $value) {
+      if (in_array($value['bid'], $bids)) {
+        $tmp = module_invoke($value['module'], 'block_view', $value['delta']);
+        $rs[$value['bid']] .= '<div class="block-page-404 block-'.$index.'">'.render($tmp['content']).'</div>';
+        $index += 1;
+      }
+    }
+
+    foreach ($bids as $key => $bid){
+      $results[] = $rs[$bid];
+    }
+  }
+  
+  if (!empty($results)) {
+    $output['footer'] = implode('', $results);
+  }
+
+	global $base_url;
+	$logo = theme_get_setting('logo');
+
+  $output = '<div class="page-wrapper">'.theme('tk_page404', array('output' => $output, 'site_info' => $logo, 'front_page' => $base_url)).'</div>';
+	
+  return $output;
+}
+
+/*
+ * Implement hook_theme().
+ */
+function tk_page404_theme(){
+	global $base_url;
+  return array(
+    'tk_page404' => array(
+      'variables' => array(
+				'output' => NULL,
+				'logo' => NULL,
+				'front_page' => $base_url,
+			),
+      'template' => 'tk-page404--page' ,
+      'render element' => 'page',
+      'path' => drupal_get_path('module', 'tk_page404'),
+    ),
+  );
+}
+
+function theme_tk_page404($variables) {	
+  return $variables;
+}
+
+function tk_page404_page_alter(&$page) {
+  if (current_path() == 'search404') {
+    drupal_get_messages();
+    $new_page['content'] = $page['content'];
+    $new_page['#theme_wrappers'] = $page['#theme_wrappers'];
+
+    $page = $new_page;
+  }
+}

@@ -1,0 +1,9 @@
+/*-------------------*/
+/* Patch fix foundation drupal style */
+/*-------------------*/
+/* Context */
+#context-blockform td.blocks .label {
+	display: block;
+	color: inherit;
+	text-align: left;
+}

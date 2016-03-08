@@ -1,0 +1,11 @@
+name = TK Views action links
+core = 7.x
+description = Create customized action link to create node or term.
+package = TK Features
+
+dependencies[] = views
+
+; Views Handlers
+files[] = plugins/views/tk_views_action_links_handler.inc
+
+version = "7.x-1.0"

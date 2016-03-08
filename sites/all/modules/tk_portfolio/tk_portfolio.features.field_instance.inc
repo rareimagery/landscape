@@ -1,0 +1,701 @@
+<?php
+/**
+ * @file
+ * tk_portfolio.features.field_instance.inc
+ */
+
+/**
+ * Implements hook_field_default_field_instances().
+ */
+function tk_portfolio_field_default_field_instances() {
+  $field_instances = array();
+
+  // Exported field_instance: 'node-portfolio-field_portfolio_body'
+  $field_instances['node-portfolio-field_portfolio_body'] = array(
+    'bundle' => 'portfolio',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      '1_column' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 200,
+        ),
+        'type' => 'text_summary_or_trimmed',
+        'weight' => 16,
+      ),
+      '2_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 20,
+      ),
+      '3_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 14,
+      ),
+      '4_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 18,
+      ),
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 5,
+      ),
+      'full' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 5,
+      ),
+      'masonry' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 17,
+      ),
+      'related' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+      'short' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 5,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 300,
+        ),
+        'type' => 'text_summary_or_trimmed',
+        'weight' => 1,
+      ),
+      'teaser_6' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 18,
+      ),
+      'timeline' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 15,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_portfolio_body',
+    'label' => 'Body',
+    'required' => 0,
+    'settings' => array(
+      'display_summary' => 0,
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 20,
+        'summary_rows' => 5,
+      ),
+      'type' => 'text_textarea_with_summary',
+      'weight' => 3,
+    ),
+  );
+
+  // Exported field_instance: 'node-portfolio-field_portfolio_category'
+  $field_instances['node-portfolio-field_portfolio_category'] = array(
+    'bundle' => 'portfolio',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      '1_column' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 14,
+      ),
+      '2_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 18,
+      ),
+      '3_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 12,
+      ),
+      '4_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 16,
+      ),
+      'default' => array(
+        'label' => 'above',
+        'module' => 'taxonomy',
+        'settings' => array(),
+        'type' => 'taxonomy_term_reference_link',
+        'weight' => 3,
+      ),
+      'full' => array(
+        'label' => 'hidden',
+        'module' => 'ds',
+        'settings' => array(
+          'taxonomy_term_link' => 1,
+          'taxonomy_term_separator' => ', ',
+        ),
+        'type' => 'ds_taxonomy_separator',
+        'weight' => 3,
+      ),
+      'masonry' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 15,
+      ),
+      'related' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 13,
+      ),
+      'short' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 4,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser_6' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 17,
+      ),
+      'timeline' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 12,
+      ),
+    ),
+    'ds_extras_field_template' => '',
+    'entity_type' => 'node',
+    'field_name' => 'field_portfolio_category',
+    'label' => 'Category',
+    'required' => 1,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 5,
+    ),
+  );
+
+  // Exported field_instance: 'node-portfolio-field_portfolio_description'
+  $field_instances['node-portfolio-field_portfolio_description'] = array(
+    'bundle' => 'portfolio',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      '1_column' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 13,
+      ),
+      '2_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 17,
+      ),
+      '3_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 11,
+      ),
+      '4_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 15,
+      ),
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 3,
+      ),
+      'masonry' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 14,
+      ),
+      'related' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 14,
+      ),
+      'short' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser_6' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 15,
+      ),
+      'timeline' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 13,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_portfolio_description',
+    'label' => 'Description',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 2,
+    ),
+  );
+
+  // Exported field_instance: 'node-portfolio-field_portfolio_image'
+  $field_instances['node-portfolio-field_portfolio_image'] = array(
+    'bundle' => 'portfolio',
+    'deleted' => 0,
+    'description' => 'Image should be larger than 610x230 pixelss',
+    'display' => array(
+      '1_column' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => 0,
+          'image_link' => 'content',
+          'image_style' => 'large_portfolio_1_column',
+        ),
+        'type' => 'image_delta',
+        'weight' => 0,
+      ),
+      '2_columns' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => 0,
+          'image_link' => 'content',
+          'image_style' => 'large_portfolio_2_columns',
+        ),
+        'type' => 'image_delta',
+        'weight' => 3,
+      ),
+      '3_columns' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => FALSE,
+          'image_link' => 'content',
+          'image_style' => 'medium_portfolio-3-cols',
+        ),
+        'type' => 'image_delta',
+        'weight' => 1,
+      ),
+      '4_columns' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => FALSE,
+          'image_link' => 'content',
+          'image_style' => 'medium_portfolio-4-cols',
+        ),
+        'type' => 'image_delta',
+        'weight' => 4,
+      ),
+      'default' => array(
+        'label' => 'above',
+        'module' => 'image',
+        'settings' => array(
+          'image_link' => '',
+          'image_style' => '',
+        ),
+        'type' => 'image',
+        'weight' => 1,
+      ),
+      'full' => array(
+        'label' => 'hidden',
+        'module' => 'field_slideshow',
+        'settings' => array(
+          'slideshow_caption' => '',
+          'slideshow_caption_link' => '',
+          'slideshow_carousel_circular' => 0,
+          'slideshow_carousel_follow' => 0,
+          'slideshow_carousel_image_style' => '',
+          'slideshow_carousel_scroll' => 1,
+          'slideshow_carousel_skin' => '',
+          'slideshow_carousel_speed' => 500,
+          'slideshow_carousel_vertical' => 0,
+          'slideshow_carousel_visible' => 3,
+          'slideshow_colorbox_image_style' => '',
+          'slideshow_colorbox_slideshow' => '',
+          'slideshow_colorbox_slideshow_speed' => 4000,
+          'slideshow_colorbox_speed' => 350,
+          'slideshow_colorbox_transition' => 'elastic',
+          'slideshow_controls' => 1,
+          'slideshow_controls_pause' => 0,
+          'slideshow_controls_position' => 'after',
+          'slideshow_field_collection_image' => '',
+          'slideshow_fx' => 'fade',
+          'slideshow_image_style' => 'large_portfolio_detail',
+          'slideshow_link' => '',
+          'slideshow_order' => '',
+          'slideshow_pager' => 'number',
+          'slideshow_pager_image_style' => '',
+          'slideshow_pager_position' => 'after',
+          'slideshow_pause' => 0,
+          'slideshow_speed' => 1000,
+          'slideshow_start_on_hover' => 0,
+          'slideshow_timeout' => 4000,
+        ),
+        'type' => 'slideshow',
+        'weight' => 3,
+      ),
+      'masonry' => array(
+        'label' => 'hidden',
+        'module' => 'image_random_style',
+        'settings' => array(
+          'image_style' => array(
+            'cloud_zoom_hover' => 0,
+            'cloud_zoom_image' => 0,
+            'large' => 0,
+            'large_blog_detail' => 0,
+            'large_blog_list' => 0,
+            'large_blog_list_2' => 0,
+            'large_blog_list_3' => 0,
+            'large_blog_list_5' => 0,
+            'large_magazine_slide' => 0,
+            'large_portfolio-1-col' => 0,
+            'large_portfolio_detail' => 0,
+            'large_testimonial' => 0,
+            'md_slider_1_bg' => 0,
+            'md_slider_1_thumb' => 0,
+            'md_slider_2_thumb' => 0,
+            'md_slider_5_thumb' => 0,
+            'medium' => 0,
+            'medium_blog_related_posts' => 0,
+            'medium_magazine_post' => 0,
+            'medium_portfolio-3-cols' => 0,
+            'medium_portfolio-4-cols' => 0,
+            'medium_portfolio_detail' => 0,
+            'medium_slide_blog_post' => 0,
+            'medium_timeline' => 0,
+            'portfolio_style_1' => 'portfolio_style_1',
+            'portfolio_style_2' => 'portfolio_style_2',
+            'portfolio_style_3' => 'portfolio_style_3',
+            'portfolio_style_4' => 'portfolio_style_4',
+            'product_detail' => 0,
+            'small_category' => 0,
+            'small_magazine_post' => 0,
+            'small_testimonial_w58' => 0,
+            'square_thumbnail' => 0,
+            'thumb_blog_list_w310' => 0,
+            'thumb_blog_list_w320' => 0,
+            'thumb_blog_post' => 0,
+            'thumb_client' => 0,
+            'thumb_discount_shop_1' => 0,
+            'thumb_discount_shop_2' => 0,
+            'thumb_event' => 0,
+            'thumb_magazine_list' => 0,
+            'thumb_masonry' => 0,
+            'thumb_popular_blog_post' => 0,
+            'thumb_product_1' => 0,
+            'thumb_product_2' => 0,
+            'thumb_recent_blog_post' => 0,
+            'thumb_testimonial' => 0,
+            'thumbnail' => 0,
+          ),
+        ),
+        'type' => 'images_style_random',
+        'weight' => 1,
+      ),
+      'related' => array(
+        'label' => 'hidden',
+        'module' => 'colorbox',
+        'settings' => array(
+          'colorbox_caption' => 'auto',
+          'colorbox_caption_custom' => '',
+          'colorbox_gallery' => 'post',
+          'colorbox_gallery_custom' => '',
+          'colorbox_image_style' => 'large_portfolio_detail',
+          'colorbox_multivalue_index' => NULL,
+          'colorbox_node_style' => 'medium_portfolio_detail',
+        ),
+        'type' => 'colorbox',
+        'weight' => 1,
+      ),
+      'short' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => 0,
+          'image_link' => 'content',
+          'image_style' => 'thumb_our_portfolio',
+        ),
+        'type' => 'image_delta',
+        'weight' => 2,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => 0,
+          'image_link' => '',
+          'image_style' => 'large_portfolio-1-col',
+        ),
+        'type' => 'image_delta',
+        'weight' => 0,
+      ),
+      'teaser_6' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => 0,
+          'image_link' => '',
+          'image_style' => 'medium_jcarousel_packaging',
+        ),
+        'type' => 'image_delta',
+        'weight' => 3,
+      ),
+      'timeline' => array(
+        'label' => 'hidden',
+        'module' => 'image_delta_formatter',
+        'settings' => array(
+          'deltas' => 0,
+          'deltas_reversed' => 0,
+          'image_link' => '',
+          'image_style' => 'medium_timeline',
+        ),
+        'type' => 'image_delta',
+        'weight' => 1,
+      ),
+    ),
+    'ds_extras_field_template' => '',
+    'entity_type' => 'node',
+    'field_name' => 'field_portfolio_image',
+    'label' => 'Image',
+    'required' => 1,
+    'settings' => array(
+      'alt_field' => 1,
+      'default_image' => 0,
+      'file_directory' => '',
+      'file_extensions' => 'png gif jpg jpeg',
+      'max_filesize' => '',
+      'max_resolution' => '',
+      'min_resolution' => '',
+      'title_field' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'image',
+      'settings' => array(
+        'preview_image_style' => 'thumbnail',
+        'progress_indicator' => 'throbber',
+      ),
+      'type' => 'image_image',
+      'weight' => 1,
+    ),
+  );
+
+  // Exported field_instance: 'node-portfolio-field_portfolio_link'
+  $field_instances['node-portfolio-field_portfolio_link'] = array(
+    'bundle' => 'portfolio',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      '1_column' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 15,
+      ),
+      '2_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 19,
+      ),
+      '3_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 13,
+      ),
+      '4_columns' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 17,
+      ),
+      'default' => array(
+        'label' => 'above',
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_default',
+        'weight' => 4,
+      ),
+      'full' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 17,
+      ),
+      'masonry' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 16,
+      ),
+      'related' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 15,
+      ),
+      'short' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 10,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser_6' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 20,
+      ),
+      'timeline' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 14,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_portfolio_link',
+    'label' => 'Link',
+    'required' => 0,
+    'settings' => array(
+      'attributes' => array(
+        'class' => '',
+        'configurable_title' => 0,
+        'rel' => '',
+        'target' => 'default',
+        'title' => '',
+      ),
+      'display' => array(
+        'url_cutoff' => 80,
+      ),
+      'enable_tokens' => 1,
+      'rel_remove' => 'default',
+      'title' => 'optional',
+      'title_maxlength' => 128,
+      'title_value' => '',
+      'url' => 0,
+      'user_register_form' => FALSE,
+      'validate_url' => 0,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'link',
+      'settings' => array(),
+      'type' => 'link_field',
+      'weight' => 4,
+    ),
+  );
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Body');
+  t('Category');
+  t('Description');
+  t('Image');
+  t('Image should be larger than 610x230 pixelss');
+  t('Link');
+
+  return $field_instances;
+}

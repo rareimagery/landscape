@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'ITCAvantGardeGothicProDemi';
+    src: url('itcavantgardepro-demi.eot');
+    src: url('itcavantgardepro-demi.eot') format('embedded-opentype'),
+         url('itcavantgardepro-demi.woff') format('woff'),
+         url('itcavantgardepro-demi.ttf') format('truetype'),
+         url('itcavantgardepro-demi.svg#ITCAvantGardeGothicProDemi') format('svg');
+}

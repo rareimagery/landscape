@@ -1,0 +1,63 @@
+<?php
+/**
+ * @file
+ * Administration theme
+ **/
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function ad_theme_form_system_themes_admin_form_alter(&$form, $form_state) {
+	$form['admin_theme']['themes'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Admin theme custom display'),
+    '#collapsible' => TRUE,
+    '#description' => t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are %admin for the admin page and %admin-wildcard for every admin page.", array('%admin' => 'admin', '%admin-wildcard' => 'admin/*')),
+  );
+
+  $form['admin_theme']['themes']['admin_theme_disable_pages'] = array(
+  	'#type' => 'textarea',
+    '#title' => t('Do not use administration theme on the following pages.'),
+    '#default_value' => variable_get('admin_theme_disable_pages', ''),
+  );
+
+  $form['#submit'][] = 'ad_theme_form_system_themes_admin_form_alter_submit';
+}
+
+/**
+ * Function set variable and clear cache
+ */
+function ad_theme_form_system_themes_admin_form_alter_submit($form, &$form_state) {
+	variable_set('admin_theme_disable_pages', $form_state['values']['admin_theme_disable_pages']);
+	drupal_flush_all_caches();
+	$form['#redirect'] = "admin/appearance";
+}
+
+/**
+ * Implement hook_custom_theme
+ * Set theme default for specific admin pages
+ */
+function ad_theme_custom_theme() {
+	if (user_access('view the administration theme') && path_is_admin(current_path())) {
+		$admin_theme_disallow = FALSE;
+	  $admin_theme = FALSE;
+	  
+	  // check if some paths are disallow to get the theme
+	  if (trim(variable_get('admin_theme_disable_pages', '')) != '') {
+	    // pages that are defined by their normal path
+	    $admin_theme_disallow = drupal_match_path($_GET['q'], variable_get('admin_theme_disable_pages', ''));
+	    
+	    // pages that are defined with their alias
+	    $alias = drupal_get_path_alias($_GET['q']);
+	    if (!$admin_theme_disallow && $alias != $_GET['q']) {
+	      $admin_theme_disallow = $admin_theme || drupal_match_path($alias, variable_get('admin_theme_disable_pages', ''));
+	    }
+	  }
+
+	  // we should not show the admin theme if the user has no access or the path is in the disallow list
+	  if ($admin_theme_disallow) {
+	  	$theme_default = variable_get('theme_default', '');
+	    return $theme_default;
+	  }
+	}
+}

@@ -1,0 +1,19 @@
+<?php
+  $google_fonts = array(
+    'Allan',
+    'Bentham',
+    'Cousine',
+    'Cuprum',
+    'Delius',
+    'Federant',
+    'Gruppo',
+    'Julee',
+    'Kenia',
+    'Kristi',
+    'Monoton',
+    'Satisfy',
+    'Ultra',
+    'Vibur',
+    'Zeyada'
+  );
+?>
